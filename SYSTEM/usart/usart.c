@@ -227,7 +227,7 @@ void User_Command_Analysis(u8 *buf)
 	p1=(u8*)strstr((const char*)buf,"$setinfo");
 	if(p1!=NULL)
 		{
-			printf("KLL_HAND_WIFI_V1.0.0\r\n");
+			printf("KLL_CAR_WIFI_V1.0.0\r\n");
 			printf("HandInter:%d\r\n",systemset.HandInter);
 			printf("SpedLmt:%d\r\n",systemset.speedlimit);
 			printf("Delaytime:%d\r\n",systemset.delaytime);

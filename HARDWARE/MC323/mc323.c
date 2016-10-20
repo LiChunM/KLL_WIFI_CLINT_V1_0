@@ -26,14 +26,14 @@ void M35PowerOn(void)
 	DRV_WIFI_ON;
 	DRV_WIFI_CHPD_ONE;
 	delay_ms(1500);
-	if(SystemDebug==2)printf("M35PowerON\r\n");
+	if(SystemDebug==2)printf("DRV_WIFI_ON\r\n");
 }
 
 void M35PowerOff(void)
 {
 	u8 i=0;
 	DRV_WIFI_OFF;
-	if(SystemDebug==2)printf("M35PowerOff\r\n");
+	if(SystemDebug==2)printf("DRV_WIFI_OFF\r\n");
 	for(i=0;i<40;i++)delay_ms(1000);
 }
 
@@ -561,4 +561,74 @@ ATK_8266_CHECK3:
 	//	}
 	//SystemFlow=0;
 	return 0;
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+void atk_8266_wifista_init(void)
+{
+	u8 tcent;
+	u8 p[100];
+	delay_ms(1000);
+	tcent=20;
+	while(atk_8266_send_cmd("AT","OK",20))
+		{
+			tcent--;
+			delay_ms(300);
+			atk_8266_quit_trans();
+			atk_8266_send_cmd("AT+CIPMODE=0","OK",200); 
+			atk_8266_at_response(1);
+			if(tcent==0)
+				{
+					tcent=20;
+					break;
+				}
+		}
+	atk_8266_at_response(1);
+	while(atk_8266_send_cmd("ATE0","OK",20));
+	atk_8266_at_response(1);
+	atk_8266_send_cmd("AT+RST","OK",20);
+	atk_8266_at_response(1);
+	delay_ms(1000);
+	delay_ms(1000);
+	delay_ms(1000);
+	delay_ms(1000);
+	atk_8266_at_response(1);
+	atk_8266_send_cmd("AT+CWMODE=3","OK",20);
+	atk_8266_at_response(1);
+	atk_8266_send_cmd("AT+CWLAP","OK",20);
+	atk_8266_at_response(1);
+	sprintf((char*)p,"AT+CWJAP=\"%s\",\"%s\"",systemset.UserName,systemset.Passwd); 
+	atk_8266_send_cmd(p,"OK",1000);
+	atk_8266_at_response(1);
+	atk_8266_send_cmd("ATE0","OK",20);
+	atk_8266_at_response(1);
+}
+
+
+
+
+u8 Connect2Hand(u8* ipaddr,u8* port)
+{
+	u8 p[40];
+	atk_8266_send_cmd("AT+CIPMUX=0","OK",100);
+	atk_8266_at_response(1);
+	sprintf((char*)p,"AT+CIPSTART=\"UDP\",\"%s\",%s",ipaddr,(u8*)port); 
+	atk_8266_send_cmd(p,"OK",500);
+	atk_8266_at_response(1);
+	atk_8266_send_cmd("AT+CIPMODE=1","OK",200);
+	atk_8266_at_response(1);
+	
+	return 0;
+}
+
+
+u8 Conecet2TheHandFromUdp(void)
+{
+	atk_8266_wifista_init();
+	Connect2Hand("255.255.255.255","6060,6060,0");
+	return 0;
+	
 }

@@ -14,4 +14,5 @@ void TIM2_Init(u16 arr,u16 psc);
 void Usart3CommandAnalysis(void);
 void USART3_CMD(unsigned char *lb);
 void USART3_DATA(unsigned char *lb,unsigned int len);
+void Usart3Command2Hex(void);
 #endif

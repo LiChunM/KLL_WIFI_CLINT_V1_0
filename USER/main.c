@@ -150,7 +150,6 @@ void usart1_task(void *pdata)
 		{
 			delay_ms(10);
 			Usart1CommandAnalysis();
-			if(SystemFlow==2||SystemFlow==10)Usart3CommandAnalysis();
 		}
 }
 //usart2任务
@@ -166,74 +165,10 @@ void usart2_task(void *pdata)
 //gps任务
 void uart5_task(void *pdata)
 {
-	u16 time=0;
 	pdata = pdata;
 	while(1)
 	{
 		delay_ms(10);
-		if(SW_CH3==0)
-			{
-				while(SW_CH3==0)
-					{
-						time++;
-						delay_ms(100);
-						if(time>20)DRV_LEDR_ON;
-					}
-				if(time>20)
-					{
-						time=0;
-						while(SW_CH3)
-							{
-								time++;
-								delay_ms(10);
-								if(time>=500)break;
-								
-							}
-						if(time<500)
-							{
-								time=0;
-								while(SW_CH3==0)
-								{
-									delay_ms(10);
-								}
-								while(SW_CH3)
-								{
-									time++;
-									delay_ms(10);
-									if(time>=500)break;
-									
-								}
-								if(time<500)
-									{
-										time=0;
-										while(SW_CH3==0)
-										{
-											delay_ms(10);
-										}
-										while(SW_CH3)
-										{
-											time++;
-											delay_ms(10);
-											if(time>=500)break;
-											
-										}
-										if(time<500)
-											{
-												time=0;
-												while(SW_CH3==0)
-												{
-													delay_ms(10);
-												}
-												SystemFlow=1;
-											}
-									}
-								
-							}
-						
-					}
-			}
-		time=0;
-		DRV_LEDR_OFF;
 	}									 
 }
 //主任务
@@ -245,43 +180,14 @@ void main_task(void *pdata)
  	while(1)
 	{
 		delay_ms(10);
-		if(SystemFlow==1)
-			{	
-				SystemFlow=3;
-				res=Find_Car();
-				if(res==2)SystemFlow=1;
-				if(res==1)SystemFlow=2;
-				if(res==0)SystemFlow=0;
-			}
 		if(SystemFlow==0)
-			{
-				res=Check_Car();
-				if(res==0)
-					{
-						if(SystemFlow==0)SystemFlow=2;
-					}
-				if(res==1)SystemFlow=0;
-				if(res==2)SystemFlow=1;
-				if(res==3)SystemFlow=3;
+			{	
+				Conecet2TheHandFromUdp();
+				SystemFlow=1;
 			}
-		if(SystemFlow==2)
+		if(SystemFlow==1)
 			{
-				Update_All();
-				delay_ms(50);
-				Command_HandData2(&lens);
-				atk_8266_sendData(Hand_Data,lens,0);
-				if(my_core_data.biandao==1&&SyssetCarinfo==0)
-					{
-						ComRoad_HandData(&lens,1);
-						atk_8266_sendData(Hand_Data,lens,0);
-						SyssetCarinfo=1;
-					}
-				if(my_core_data.biandao==0&&SyssetCarinfo==1)
-					{
-						ComRoad_HandData(&lens,0);
-						atk_8266_sendData(Hand_Data,lens,0);
-						SyssetCarinfo=0;
-					}
+				Usart3Command2Hex();
 			}
 		
 	}

@@ -66,7 +66,7 @@ void USART3_Init(u32 bound)
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 3; 
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
-	TIM2_Init(999,7199); 
+	TIM2_Init(99,7199); 
 	USART3_RX_STA=0;
 	TIM2_Set(0);
 #endif
@@ -124,6 +124,23 @@ void Usart3CommandAnalysis(void)
 			if(SystemDebug==2)printf("%s\r\n",USART3_RX_BUF);
 			USART3_RX_STA=0;
 			atk_8266_recive_data(buf,lens);
+		}
+}
+
+
+void Usart3Command2Hex(void)
+{
+	u8 lens,i;
+	if(USART3_RX_STA&0X8000)
+		{
+			lens=USART3_RX_STA&0X7FF;
+			USART3_RX_BUF[USART3_RX_STA&0X7FFF]=0;
+			printf("RE:\r\n");
+			for(i=0;i<lens;i++)
+				{
+					printf("%02X",USART3_RX_BUF[i]);
+				}
+			printf("\r\n");
 		}
 }
 

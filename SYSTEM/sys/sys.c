@@ -230,7 +230,7 @@ void SYS_Parameter_Init(void)
 		}
 	else
 		{
-			printf("KLL_HAND_WIFI_V1.0.0\r\n");
+			printf("KLL_CAR_WIFI_V1.0.0\r\n");
 			printf("HandInter:%d\r\n",systemset.HandInter);
 			printf("SpedLmt:%d\r\n",systemset.speedlimit);
 			printf("Delaytime:%d\r\n",systemset.delaytime);
